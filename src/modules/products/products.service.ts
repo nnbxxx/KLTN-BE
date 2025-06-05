@@ -19,8 +19,7 @@ import { CreateInventoryProductDto } from '../inventory-product/dto/create-inven
 import { ReviewsService } from '../reviews/reviews.service';
 import { CategoriesService } from '../categories/categories.service';
 import { User, UserDocument } from '../users/schemas/user.schema';
-import { NotificationsService } from 'src/notifications/notifications.service';
-import { NotificationsGateway } from 'src/notifications/notifications.gateway';
+
 import { InventoryProduct, InventoryProductDocument } from '../inventory-product/schemas/inventory-product.schemas';
 
 @Injectable()
@@ -37,8 +36,7 @@ export class ProductsService {
     @Inject(forwardRef(() => ReviewsService))
     private reviewService: ReviewsService,
     private categoriesService: CategoriesService,
-    private notificationsGateway: NotificationsGateway,
-    private notificationsService: NotificationsService,
+
   ) { }
 
   async create(createProductDto: CreateProductDto, user: IUser) {
@@ -121,24 +119,12 @@ export class ProductsService {
   async sendNewProductNotification(product) {
     const listUser = await this.userModel.find({}, '_id').exec();
     listUser.forEach(async (user) => {
-      this.notificationsService.create({
-        message: `Có sản phẩm mới: ${product.name}`,
-        title: `Có sản phẩm mới: ${product.name}`,
-        userId: user as any,
-        navigate: `${process.env.FE_URI}product/${product._id}`,
-      });
+
       const connectSocketId = await this.userService.checkConnectSocketIo(
         user as any,
       );
       if (connectSocketId !== null) {
-        this.notificationsGateway.sendNotification(
-          {
-            message: `Có sản phẩm mới: ${product.name}`,
-            title: `Có sản phẩm mới: ${product.name}`,
-            userId: user as any,
-          },
-          connectSocketId as any,
-        );
+
       }
     });
   }

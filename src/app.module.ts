@@ -19,8 +19,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { LikeProductsModule } from './modules/like-products/like-products.module';
 import { CouponsModule } from './modules/coupons/coupons.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { NotificationsGateway } from './notifications/notifications.gateway';
+
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FilesModule } from './modules/files/files.module';
 import { InventoryProductModule } from './modules/inventory-product/inventory-product.module';
@@ -71,7 +70,6 @@ import { GatewayModule } from './gateway/gateway.module';
         ReviewsModule,
         LikeProductsModule,
         CouponsModule,
-        NotificationsModule,
         CloudinaryModule,
         FilesModule,
         InventoryProductModule,
@@ -88,7 +86,6 @@ import { GatewayModule } from './gateway/gateway.module';
     controllers: [AppController],
     providers: [
         AppService,
-        NotificationsGateway,
         // bind to ThrottlerGuard globally
         {
             provide: APP_GUARD,

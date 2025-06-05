@@ -9,8 +9,7 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import dayjs from 'dayjs';
 import { UsersService } from '../users/users.service';
-import { NotificationsGateway } from 'src/notifications/notifications.gateway';
-import { NotificationsService } from 'src/notifications/notifications.service';
+
 
 @Injectable()
 export class CouponsService {
@@ -18,8 +17,7 @@ export class CouponsService {
     @InjectModel(Coupon.name)
     private couponModel: SoftDeleteModel<CouponDocument>,
     private userService: UsersService,
-    private notificationsGateway: NotificationsGateway,
-    private notificationsService: NotificationsService
+
 
   ) { }
   async create(createCouponDto: CreateCouponDto, user: IUser) {
@@ -130,20 +128,9 @@ export class CouponsService {
       listUser.forEach(async (user) => {
 
         this.userService.updateUserNewCoupons(user._id as any, { _id, code, name, couponExpired } as any)
-        this.notificationsService.create({
-          message: `${name}`,
-          title: `Bạn vừa nhận được mã khuyến mãi mới: ${code}`,
-          userId: user._id as any,
-          navigate: 'https://www.google.com/'
-        })
+
         const connectSocketId = await this.userService.checkConnectSocketIo(user._id as any);
-        if (connectSocketId !== null) {
-          this.notificationsGateway.sendNotification({
-            message: `${name}`,
-            title: `Bạn vừa nhận được mã khuyến mãi mới: ${code}`,
-            userId: user._id as any
-          }, connectSocketId as any)
-        }
+
 
       })
 

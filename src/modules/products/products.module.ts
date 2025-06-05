@@ -7,7 +7,6 @@ import { UsersModule } from '../users/users.module';
 import { InventoryProductModule } from '../inventory-product/inventory-product.module';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { CategoriesModule } from '../categories/categories.module';
-import { NotificationsModule } from 'src/notifications/notifications.module';
 import { User, UserSchema } from '../users/schemas/user.schema';
 import { InventoryProduct, InventoryProductSchema } from '../inventory-product/schemas/inventory-product.schemas';
 
@@ -16,7 +15,7 @@ import { InventoryProduct, InventoryProductSchema } from '../inventory-product/s
     UsersModule,
     InventoryProductModule,
   forwardRef(() => ReviewsModule),
-    CategoriesModule, NotificationsModule],
+    CategoriesModule],
   controllers: [ProductsController],
   providers: [ProductsService],
   exports: [ProductsService]
