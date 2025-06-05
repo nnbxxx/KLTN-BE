@@ -10,85 +10,58 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // get port from .env
   const configService = app.get(ConfigService);
   const port = configService.get<string>('PORT') || 4000;
 
-  // config middleware: use metedata
   const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector)); // enable jwt-guard globally
-  app.useGlobalInterceptors(new TransformInterceptor(reflector)); // transform-interceptor
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
-  //config view engine
-  app.useStaticAssets(join(__dirname, '..', 'public')); // js, css, image
-  app.setBaseViewsDir(join(__dirname, '..', 'views')); // view html
-  app.setViewEngine('ejs');
+  // Dùng static & view nếu có render HTML, nếu không thì nên bỏ
+  if (process.env.ENABLE_VIEWS === 'true') {
+    app.useStaticAssets(join(__dirname, '..', 'public'));
+    app.setBaseViewsDir(join(__dirname, '..', 'views'));
+    app.setViewEngine('ejs');
+  }
 
-  console.log('>> check path public: ', join(__dirname, '..', 'public'));
-  console.log('>> check path views: ', join(__dirname, '..', 'views'));
-  // config port
-
-  // config security
   app.use(helmet());
+  app.use(compression());
+  app.use(cookieParser());
 
-  // chayj cho mobile
-  // app.enableCors({
-  //   origin: "*",
-  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  //   credentials: true,
-  // });
-  app.enableCors(
-    {
-      "origin": true,
-      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-      "preflightContinue": false,
-      credentials: true
-    }
-  );
+  app.enableCors({
+    origin: true, // Hoặc ['https://your-frontend.com']
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  });
 
-
-  // config tools
-  app.use(compression())
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  //config versioning
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: ['1'] //v1, v2
+    defaultVersion: ['1'],
   });
 
-  //config cookies
-  app.use(cookieParser());
-  //config swagger
-  const config = new DocumentBuilder()
-    .setTitle('NestJS  APIs Document')
-    .setDescription('All Modules APIs')
-    .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'Bearer',
-        bearerFormat: 'JWT',
-        in: 'header',
-      },
-      'token',
-    )
-    .addSecurityRequirements('token')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    }
+  // CHỈ bật swagger khi không phải production
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('NestJS APIs')
+      .setDescription('All Modules APIs')
+      .setVersion('1.0')
+      .addBearerAuth({ type: 'http', scheme: 'Bearer' }, 'token')
+      .addSecurityRequirements('token')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('swagger', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
   }
-  );
 
   await app.listen(port);
-
 }
+
 bootstrap();
