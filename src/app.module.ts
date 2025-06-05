@@ -7,7 +7,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { MailModule } from './mail/mail.module';
 import { UsersModule } from './modules/users/users.module';
@@ -24,11 +23,9 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { NotificationsGateway } from './notifications/notifications.gateway';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FilesModule } from './modules/files/files.module';
-import { InventoryProduct } from './modules/inventory-product/schemas/inventory-product.schemas';
 import { InventoryProductModule } from './modules/inventory-product/inventory-product.module';
 import { AddressUserModule } from './modules/address-user/address-user.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
-import { RolesModule } from './modules/roles/roles.module';
 import { DatabasesModule } from './databases/databases.module';
 
 import { ColorModule } from './color/color.module';
@@ -38,8 +35,7 @@ import { BlogModule } from './modules/blog/blog.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { GatewayModule } from './gateway/gateway.module';
 
-import { VectorStoreService } from './vector-store/vector-store.service';
-import { VectorStoreModule } from './vector-store/vector-store.module';
+
 
 
 @Module({
@@ -88,7 +84,6 @@ import { VectorStoreModule } from './vector-store/vector-store.module';
         BlogModule,
         DashboardModule,
         GatewayModule,
-        VectorStoreModule,
     ],
     controllers: [AppController],
     providers: [
@@ -99,7 +94,6 @@ import { VectorStoreModule } from './vector-store/vector-store.module';
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
         },
-        VectorStoreService,
         // {
         //   provide: APP_GUARD,
         //   useClass: JwtAuthGuard,
