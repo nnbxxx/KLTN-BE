@@ -30,8 +30,7 @@ import { AddressUserModule } from './modules/address-user/address-user.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { DatabasesModule } from './databases/databases.module';
-import { MessageModule } from './modules/message/message.module';
-import { ChatRoomsModule } from './modules/chat-rooms/chat-rooms.module';
+
 import { ColorModule } from './color/color.module';
 import { BrandModule } from './brand/brand.module';
 import { BlogCategoryModule } from './blog-category/blog-category.module';
@@ -82,10 +81,7 @@ import { VectorStoreModule } from './vector-store/vector-store.module';
         InventoryProductModule,
         AddressUserModule,
         PermissionsModule,
-        // RolesModule,
         DatabasesModule,
-        ChatRoomsModule,
-        MessageModule,
         ColorModule,
         BrandModule,
         BlogCategoryModule,

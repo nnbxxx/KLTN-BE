@@ -16,7 +16,7 @@ async function bootstrap() {
 
   // get port from .env
   const configService = app.get(ConfigService);
-  const port = configService.get<string>('PORT');
+  const port = configService.get<string>('PORT') || 4000;
 
   // config middleware: use metedata
   const reflector = app.get(Reflector);
